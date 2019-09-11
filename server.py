@@ -2,6 +2,7 @@ import socket
 from _thread import *
 import threading
 import json
+import server_handler as h
 
 HOST = '127.0.0.1'
 PORT = 65432
@@ -23,6 +24,14 @@ print_lock = threading.Lock()
 
 def threaded(c):
   c.send(b"Welcome to President")
+  while True:
+    data = c.recv(1024)
+    response = h.handler(data)
+    if not response:
+      break
+    else:
+      c.send(response.encode())
+  '''
   data = c.recv(1024)
   jmsg = json.loads(data.decode())
   if jmsg['type'] == "login":
@@ -46,17 +55,16 @@ def threaded(c):
         continue
   else:
     print("Error")
-  print_lock.release()
+  '''
   c.close()
 
 def main():
   with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind((HOST, PORT))
-
-    s.listen()
+    s.listen(10)
+    print("Socket Listening")
     while True:
       conn, addr = s.accept()
-      print_lock.acquire()
       print("Connected by ", addr)
       start_new_thread(threaded, (conn,))
     s.close()

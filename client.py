@@ -33,7 +33,7 @@ def main():
     if jmsg['body'] == True:
       start_new_thread(listenThread, (s,))
       while True:
-        body = input("Ingrese se mensaje")
+        body = input("Ingrese su opción")
         jmsg = {
           'type': 'normal',
           'body': body,
