@@ -23,7 +23,7 @@ If there where 2 or more cards played in the field, the next turn has to be the 
 * Vice-President - second place
 * High-Scum - next to last place
 * Scum - last place
-Special titles
+
 
 
 For more information: 
