@@ -3,62 +3,89 @@
 # Autores:  Rodrigo Juarez           #
 #           Carlos Arroyave          #
 #           Michelle Bloomfield      #
-# controller.py: control the game    #
+# controller.py: control the president    #
 
-import Deck
-import Player
+import player
 
-class Controller():
 
-    def __init__(self):
-        self.deck = Deck.Deck()
-        self.players = []
-        self.game_over = False
-        ## current_play: [("Two", 15), ("Three", 3)]
-        self.current_play = []
+class Controller(object):
 
-    ## Players: list of players that is in the game
-    def distribute_cards(self, player):
-        return 0
+    def __init__(self, president):
+        self.president = president
+
+    def registration(self):
+        name = input('Add new player username: ')
+        if name.isalnum():
+            p = player.Player(name)
+            self.president.add_player(p)
+        return not name.isalnum()
+
+    # Players: list of players that is in the president
+    def deal_cards(self):
+        self.president.deal_cards()
         
-    def make_move(self):
-        return 0
+    def make_play(self):
+        player = self.president.current_turn
+        cards = player.cards_selected
+        check = self.valid_move()
+        if check == "nel":
+            self.president.rekterino_playerino()
+        elif not self.valid_move():
+            print("Invalid Move")
+            player.unselect()
+        else:
+            self.president.make_play()
 
-    ## cards: list of cards that the player selects to move
-    ## cards: [("Two", 15), ("Three", 3)]
-    def valid_move(self, cards):
+    def valid_move(self):
+        cards_in_play = self.president.current_turn.cards_selected
+        cards_in_stack = self.president.carderino
+        card_num = cards_in_play[0].num
+        for card in cards_in_play:
+            if card.num != card_num:
+                return False
 
-        ## Validates if the current play has more or equal cards that the player move
-        if len(self.current_play)<= len(cards):
-
-            # More than 1 card
-            if len(cards)>1:
-                ##If the layer has more tha 1 card, it looks if they are the same
-                if(len(set(cards))>1):
-                    return False
-                else: 
-                    ## If the last played has the same or less cards that the current play
-                    if len(cards)>= len(self.current_play):
-                        ##if the played cards are the same or higher then it can be played
-                        current_card = self.current_play[0]
-                        played_card = cards[0]
-                        if(current_card[1]> played_card[1]):
-                            return False
-                        else: 
-                            return True
-
-        ## if the current play has more than the new play then its false
-        else: 
-            return False
-
-        #Compares the card 
-        current_card = self.current_play[0]
-        played_card = cards[0]
-        if(current_card[1]> played_card[1]):
-            return False
-        else: 
+        if len(cards_in_stack) == 0:
             return True
 
-            
+        cards_in_stack_num = cards_in_stack[0].num
+        if cards_in_stack_num > card_num:
+            return False
+
+        if cards_in_stack_num == card_num and len(cards_in_stack) == len(cards_in_play):
+            return "nel"
+
+        if card_num == 15:
+            return len(cards_in_stack) == len(cards_in_play) or len(cards_in_stack) == len(cards_in_play) + 1
+
+        return card_num > cards_in_stack_num and len(cards_in_stack) == len(cards_in_play)
+
+
+    def move(self):
+         print("enter 'pass' to pass your turn or 'unselect' to unselect all cards or ")
+         card_name = input("Enter the name of the card you want to select or press Enter to stop selecting: ")
+         card_name = card_name.lower()
+         player = self.president.current_turn
+         cards_name = [card.name.lower() for card in player.cards_left]
+         field = self.president.carderino
+         if card_name == "unselect":
+             self.president.current_turn.unselect()
+
+         elif (card_name == "" and len(player.cards_selected) != 0) or (card_name == "pass" and len(field) != 0):
+             return card_name
+
+         elif card_name in cards_name:
+             index = cards_name.index(card_name)
+             card = player.cards_left[index]
+             player.select_card(card)
+         else:
+             print("INVALID CARD SELECTION")
+
+         return False
+
+    def player_pass(self):
+        self.president.current_turn.unselect()
+        self.president.passed()
+
+
 
 

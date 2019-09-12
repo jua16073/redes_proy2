@@ -7,8 +7,10 @@
 # Deck.py: makes a random deck       #
 
 import random
-class Deck():
-    
+
+
+class Deck(object):
+
     def __init__(self):
         self.card_list = self.generar_cartas()
 
@@ -18,7 +20,30 @@ class Deck():
         cards = []
         for name in names:
             for suit in suits:
-                cards.append((name[0], suit, name[1]))
+                card = Card(name[0], suit, name[1])
+                cards.append(card)
         random.shuffle(cards)
         return cards
 
+    def draw(self):
+        return self.card_list.pop()
+
+    def size(self):
+        return len(self.card_list)
+
+
+class Card(object):
+
+    def __init__(self, name, suit, num):
+        self.suit = suit
+        self.name = name + " of " + suit
+        self.num = num
+
+    def get_suit(self):
+        return self.suit
+
+    def get_name(self):
+        return self.name
+
+    def get_num(self):
+        return self.num

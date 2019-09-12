@@ -17,7 +17,7 @@ The last person who play the higher cards **starts** the next round
 
 If there where 2 or more cards played in the field, the next turn has to be the same amount of cards (or higher) with a higher number or the same. 
 
-### Game titles
+### president titles
 
 * President - winner of the previus round
 * Vice-President - second place
