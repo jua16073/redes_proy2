@@ -1,0 +1,119 @@
+def listenThread(c):
+  while True:
+    data = c.recv(1024)
+    handler(data)
+
+def handler(jmsg):
+  msg = json.loads(jmsg)
+  if msg['type'] == 'login':
+    username = msg['user']
+    id = msg['id']
+    print("usuario: " + msg['user'] + " id:" + str(id))
+    print("Seteo Evento")
+  elif msg['type'] == 'normal':
+    print(msg['body'])
+
+def send_handler():
+  print("id: ", id)
+  if id == -1:
+    resp = input("Ingrese su usuario\n")
+    jmsg = {
+      'type': "login",
+      'body': resp,
+    }
+    if resp == 'exit':
+      return False
+    respose = json.dumps(jmsg)
+  else:
+    if room == -1:
+      resp = input("Desea: \n 1) Crear sala \n 2) Unirse a sala \n 3) Ver salas disponibles")
+      if op in [1, 2, 3]:
+        jmsg = {
+          'type': "room",
+          'body': resp,
+        }
+        if resp == 'exit':
+          return False
+        respose = json.dumps(jmsg)
+  return respose
+
+'''
+    username = input("Ingrese su nombre de usuario: \n")
+    jmsg = {
+      'type': "login",
+      'body': username,
+    }
+    msg = json.dumps(jmsg)
+    s.send(msg.encode())
+    start_new_thread(listenThread, (s,))
+    while True:
+      body = input("Mensaje: ")
+      if body == "exit":
+        jmsg = {
+            'type': "logout"
+          }
+        msg = json.dumps(jmsg)
+        s.send(msg.encode())
+        break
+      else:
+        jmsg = {
+          'type': 'normal',
+          'body': body
+        }
+        msg = json.dumps(jmsg)
+        s.send(msg.encode()
+    '''
+
+////////////////////////////////////////////////////////////////////////////////////////////
+def main():
+  with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.connect((HOST, PORT))
+    data = s.recv(1024)
+    print(data)
+    while True:
+      msg = send_handler()
+      if not msg:
+        jmsg = {
+            'type': "logout"
+          }
+        msg = json.dumps(jmsg)
+        s.send(msg.encode())
+        break
+      else:
+        s.send(msg.encode())
+      jmsg = s.recv(1024)
+      handler(jmsg)
+    s.close()
+
+def handler(jmsg):
+  msg = json.loads(jmsg)
+  if msg['type'] == 'login':
+    username = msg['user']
+    id = msg['id']
+    print("usuario: " + msg['user'] + " id:" + str(id))
+  elif msg['type'] == 'normal':
+    print(msg['body'])
+
+def send_handler():
+  print("id: ", id)
+  if id == -1:
+    resp = input("Ingrese su usuario\n")
+    jmsg = {
+      'type': "login",
+      'body': resp,
+    }
+    if resp == 'exit':
+      return False
+    respose = json.dumps(jmsg)
+  else:
+    if room == -1:
+      resp = input("Desea: \n 1) Crear sala \n 2) Unirse a sala \n 3) Ver salas disponibles")
+      if op in [1, 2, 3]:
+        jmsg = {
+          'type': "room",
+          'body': resp,
+        }
+        if resp == 'exit':
+          return False
+        respose = json.dumps(jmsg)
+  return respose

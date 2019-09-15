@@ -8,14 +8,11 @@ HOST = '127.0.0.1'
 PORT = 65432
 
 cards = ["3", "4", "5", "6", "7", "J", "Q", "K", "A", "2"]
-
-print_lock = threading.Lock()
-
 def threaded(c):
   c.send(b"Welcome to President")
   while True:
     data = c.recv(1024)
-    response = h.handler(data)
+    response = h.handler(data.decode())
     if not response:
       break
     else:
