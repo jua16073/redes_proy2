@@ -51,6 +51,12 @@ class Client:
     elif body == "start":
       body = input("Ingrese el nombre del cuarto: ")
       self.create_room(body)
+    elif body == "search":
+      self.get_room()
+    elif body == "join":
+      body = input("Ingrese el nombre dle cuarto al que desea ingresar: ")
+
+      self.join_room(body,[self.id, self.name])
     else:
       jmsg = {
         'type': 'normal',
@@ -62,16 +68,28 @@ class Client:
   def create_room(self, room):
     jmsg = {
       'type': 'start',
-      'payload': room
+      'body': room
     }
     msg = json.dumps(jmsg)
-    self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    self.s.connect(self.server)
     self.s.send(msg.encode())
-    data = self.s.recv(1024)
-    self.s.close()
-    self.room_id =jmsg
-    
+
+  def get_room(self):
+    jmsg = {
+      'type': 'getrooms',
+    }
+    msg = json.dumps(jmsg)
+    self.s.send(msg.encode())
+
+  def join_room(self,room,name):
+    jmsg = {
+      'type': 'join',
+      'body': room,
+      'name': name,
+    }
+    msg = json.dumps(jmsg)
+    self.s.send(msg.encode())
+
+
 
   def logout(self):
     jmsg = {
@@ -104,7 +122,7 @@ class listener(threading.Thread):
 
 if __name__ == "__main__":
   user = input("Ingrese su nombre de Usuario ")
-  client = Client('user')
+  client = Client(user)
   while True:
     if client.connected:
       client.send_msg()
