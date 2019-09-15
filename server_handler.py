@@ -19,7 +19,7 @@ def handler(jmsg):
     print("Bienvenido: " + msg['body'])
   # Creacion de cuartos
   elif msg['type'] == "start":
-    print("Salas")
+    print("Se esta creando una sala")
     response = {
       'type': "normal",
       'body': "nani"

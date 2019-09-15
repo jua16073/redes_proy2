@@ -17,7 +17,7 @@ class Client:
   def __init__(self, username, HOST = '127.0.0.1', PORT = 65432):
     self.id = None
     self.name = username
-    self.room = None
+    self.room_id = None
     self.lock = threading.Lock()
     #self.server_listener.start()
     self.server = (HOST, PORT)
@@ -45,9 +45,12 @@ class Client:
     self.send_msg()
   
   def send_msg(self):
-    body = input("mensaje: ")
+    body = input("Mensaje: ")
     if body == "exit":
       self.logout()
+    elif body == "start":
+      body = input("Ingrese el nombre del cuarto: ")
+      self.create_room(body)
     else:
       jmsg = {
         'type': 'normal',
@@ -56,6 +59,20 @@ class Client:
       msg = json.dumps(jmsg)
       self.s.send(msg.encode())
   
+  def create_room(self, room):
+    jmsg = {
+      'type': 'start',
+      'payload': room
+    }
+    msg = json.dumps(jmsg)
+    self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    self.s.connect(self.server)
+    self.s.send(msg.encode())
+    data = self.s.recv(1024)
+    self.s.close()
+    self.room_id =jmsg
+    
+
   def logout(self):
     jmsg = {
       'type': 'logout',

@@ -33,7 +33,7 @@ def send_handler(event):
   else:
     if room == -1:
       resp = input("Desea: \n 1) Crear sala \n 2) Unirse a sala \n 3) Ver salas disponibles")
-      if op in [1, 2, 3]:
+      if resp in [1, 2, 3]:
         jmsg = {
           'type': "room",
           'body': resp,
