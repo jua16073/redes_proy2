@@ -13,7 +13,6 @@ from _thread import *
 
 class Client:
 
-
   def __init__(self, username, HOST = '127.0.0.1', PORT = 65432):
     self.id = None
     self.name = username
@@ -92,12 +91,12 @@ class Client:
   def start_game(self, name):
     jmsg = {
       'type': 'startGame',
-      'name': name,
+      'body': name,
     }
     msg = json.dumps(jmsg)
     self.s.send(msg.encode())
 
-  def join_room(self,room,name):
+  def join_room(self, room, name):
     jmsg = {
       'type': 'join',
       'body': room,

@@ -75,7 +75,6 @@ class Sala:
                 controllers.player_pass()
             elif move == "":
                 controllers.make_play()
-
             view.update()
         view.show_winners()
 

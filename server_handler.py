@@ -1,6 +1,8 @@
 import json
 from Salas import Salas
-
+import President
+import controller
+import View
 cards = ["3", "4", "5", "6", "7", "J", "Q", "K", "A", "2"]
 
 users = []
@@ -32,8 +34,13 @@ def handler(jmsg, c):
     }
   elif msg['type']=='startGame':
     print(salas.start_game(msg['body']))
+    tos = []
+    for x in complete:
+      tos.append(x)
     response = {
-      'type': 'empezara el juego'
+      'type': 'chat',
+      'to': tos,
+      'body': salas.sala.juego.view.show()
     }
 
   # Send existing rooms
@@ -85,3 +92,6 @@ def handler(jmsg, c):
       'body': "nani",
     }
   return (response)
+
+
+

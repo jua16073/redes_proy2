@@ -20,7 +20,7 @@ class View(object):
 
     def before_start_show(self):
         print ("The current players are: \n" + '\n'.join([player.name for player in self.players]))
-        print ("Time to add players, you must add atleast two")
+        print ("Time to add players, you must add at least two")
 
     def show(self):
         print (player.name for player in self.players_in_round)
@@ -29,6 +29,7 @@ class View(object):
         print ("\n\n It's " + self.curr_turn.name + " turn:")
         cards = sorted(self.curr_turn.cards_left, key=lambda card: card.num)
         count = 0
+
         print ("The following are the cards they may play: \n" + "\n".join([card.name for card in cards]))
 
         selected_cards = self.curr_turn.cards_selected
