@@ -12,10 +12,12 @@ from _thread import *
 # room = -1
 
 class Client:
+
+
   def __init__(self, username, HOST = '127.0.0.1', PORT = 65432):
     self.id = None
     self.name = username
-    self.room = False
+    self.room_id = None
     self.lock = threading.Lock()
     #self.server_listener.start()
     self.server = (HOST, PORT)
@@ -63,6 +65,32 @@ class Client:
       msg = json.dumps(jmsg)
       self.s.send(msg.encode())
   
+  def create_room(self, room):
+    jmsg = {
+      'type': 'start',
+      'body': room
+    }
+    msg = json.dumps(jmsg)
+    self.s.send(msg.encode())
+
+  def get_room(self):
+    jmsg = {
+      'type': 'getrooms',
+    }
+    msg = json.dumps(jmsg)
+    self.s.send(msg.encode())
+
+  def join_room(self,room,name):
+    jmsg = {
+      'type': 'join',
+      'body': room,
+      'name': name,
+    }
+    msg = json.dumps(jmsg)
+    self.s.send(msg.encode())
+
+
+
   def logout(self):
     jmsg = {
       'type': 'logout',
@@ -71,6 +99,7 @@ class Client:
     self.s.send(msg.encode())
     self.connected = False
     self.server_listener.stop()
+    #self.s.close()
 
 class listener(threading.Thread):
   def __init__(self, s, client):
@@ -83,7 +112,7 @@ class listener(threading.Thread):
       if self.client.connected:
         data = self.conn.recv(1024)
         if data:
-          self.client.reciever(data.decode())
+          print(data.decode())
       else:
         break
   
