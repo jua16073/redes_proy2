@@ -31,6 +31,8 @@ class Sala:
         self.capacidad = capacidad
         self.jugadores = []
         self.nombre = nombre
+        self.turn = None
+        self.card = None
 
     def join(self, player):
         if len(self.jugadores) != self.capacidad:
@@ -44,4 +46,6 @@ class Sala:
 
     def jugadores_nombres(self):
         return self.jugadores
-        
+    
+    def actuan_turn(self):
+        return self.turn

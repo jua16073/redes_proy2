@@ -12,11 +12,16 @@ def threaded(c):
   c.send(b"Welcome to President")
   while True:
     data = c.recv(1024)
-    response = h.handler(data.decode())
+    response = h.handler(data.decode(), c)
     if not response:
       break
     else:
-      c.send(response.encode())
+      if response['type'] == 'chat':
+        for t in response['to']:
+          response.pop('to', None)
+          t[0].send(json.dumps(response).encode())
+      else:  
+        c.send(json.dumps(response).encode())
   c.close()
 
 def main():
