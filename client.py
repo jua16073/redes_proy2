@@ -54,12 +54,10 @@ class Client:
     elif body == "search":
       self.get_room()
     elif body == "join":
-<<<<<<< HEAD
       body = input("Ingrese el nombre del cuarto al que desea ingresar: ")
       self.join_room(body, self.name)
     elif body == "empezar":
       self.start_game(self.name)
-=======
       body = input("Ingrese el nombre dle cuarto al que desea ingresar: ")
       self.join_room(body,[self.id, self.name])
     elif body == "chat":
@@ -70,7 +68,6 @@ class Client:
       }
       msg = json.dumps(jmsg)
       self.s.send(msg.encode())
->>>>>>> bc8de9d7df10017bb2a9f599f53ac7a598fe6db8
     else:
       jmsg = {
         'type': 'normal',
