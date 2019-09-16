@@ -41,6 +41,8 @@ class Sala:
         self.capacidad = capacidad
         self.jugadores = []
         self.nombre = nombre
+        self.turn = None
+        self.card = None
 
     def join(self, player):
         if len(self.jugadores) != self.capacidad:
@@ -76,3 +78,7 @@ class Sala:
 
             view.update()
         view.show_winners()
+
+    
+    def actuan_turn(self):
+        return self.turn

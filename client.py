@@ -17,7 +17,7 @@ class Client:
   def __init__(self, username, HOST = '127.0.0.1', PORT = 65432):
     self.id = None
     self.name = username
-    self.room_id = None
+    self.room = None
     self.lock = threading.Lock()
     #self.server_listener.start()
     self.server = (HOST, PORT)
@@ -54,10 +54,23 @@ class Client:
     elif body == "search":
       self.get_room()
     elif body == "join":
+<<<<<<< HEAD
       body = input("Ingrese el nombre del cuarto al que desea ingresar: ")
       self.join_room(body, self.name)
     elif body == "empezar":
       self.start_game(self.name)
+=======
+      body = input("Ingrese el nombre dle cuarto al que desea ingresar: ")
+      self.join_room(body,[self.id, self.name])
+    elif body == "chat":
+      body = input("Mensaje a mandar: ")
+      jmsg = {
+        'type': 'chat',
+        'body': body,
+      }
+      msg = json.dumps(jmsg)
+      self.s.send(msg.encode())
+>>>>>>> bc8de9d7df10017bb2a9f599f53ac7a598fe6db8
     else:
       jmsg = {
         'type': 'normal',
@@ -104,6 +117,9 @@ class Client:
       print("\nrecibido: ", msg['body'])
     elif msg['type'] == "room":
       print(msg['body'])
+    elif msg['type'] == 'joined':
+      self.room = msg['room']
+      print("Joined to room: ", msg['room'])
     else:
       print(msg)
 
@@ -115,7 +131,6 @@ class Client:
     self.s.send(msg.encode())
     self.connected = False
     self.server_listener.stop()
-    #self.s.close()
 
 class listener(threading.Thread):
   def __init__(self, s, client):

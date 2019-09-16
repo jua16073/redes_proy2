@@ -11,12 +11,24 @@ cards = ["3", "4", "5", "6", "7", "J", "Q", "K", "A", "2"]
 def threaded(c):
   c.send(b"Welcome to President")
   while True:
-    data = c.recv(1024)
-    response = h.handler(data.decode())
-    if not response:
+    try:
+      data = c.recv(1024)
+      response = h.handler(data.decode(), c)
+      if not response:
+        break
+      else:
+        if response['type'] == 'chat':
+          for t in response['to']:
+            response.pop('to', None)
+            t[0].send(json.dumps(response).encode())
+        else:  
+          c.send(json.dumps(response).encode())
+    except:
+      msg = json.dumps({
+        'type': "logout"
+      })
+      h.handler(msg, c)
       break
-    else:
-      c.send(response.encode())
   c.close()
 
 def main():
