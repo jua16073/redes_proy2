@@ -58,8 +58,6 @@ class Client:
       self.join_room(body, self.name)
     elif body == "empezar":
       self.start_game(self.name)
-      body = input("Ingrese el nombre dle cuarto al que desea ingresar: ")
-      self.join_room(body,[self.id, self.name])
     elif body == "chat":
       body = input("Mensaje a mandar: ")
       jmsg = {

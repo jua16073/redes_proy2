@@ -31,6 +31,7 @@ def handler(jmsg, c):
       'body': "Created"
     }
   elif msg['type']=='startGame':
+    print(salas.start_game(msg['body']))
     response = {
       'type': 'empezara el juego'
     }
