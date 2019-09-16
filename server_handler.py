@@ -23,22 +23,24 @@ def handler(jmsg):
   # Creacion de cuartos
   elif msg['type'] == "start":
     print("Se esta creando la sala " + msg['body'])
-    response = {
-      'type': "normal",
-      'body': "nani"
-    }
     salas.create_room(msg['body'])
+    response = {
+      'type': "room",
+      'body': "Created"
+    }
     
   
   elif msg['type']=="getrooms":
     print(salas.all_salas())
     response = {
-      'body ': salas.all_salas()
+      'type': 'room',
+      'body': salas.all_salas()
     }
   elif msg['type']=="join":
     salas.unir_sala(msg['name'], msg['body'])
     response = {
-      'body ':"hola"
+      'type': "room",
+      'body':"Joined"
     }
   # NORMAL
   elif msg['type'] == "normal":

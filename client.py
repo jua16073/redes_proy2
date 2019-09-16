@@ -89,7 +89,14 @@ class Client:
     msg = json.dumps(jmsg)
     self.s.send(msg.encode())
 
-
+  def reciever(self, jmsg):
+    msg = json.loads(jmsg)
+    if msg['type'] == "normal":
+      print("\nrecibido: ", msg['body'])
+    elif msg['type'] == "room":
+      print(msg['body'])
+    else:
+      print(msg)
 
   def logout(self):
     jmsg = {
@@ -112,7 +119,7 @@ class listener(threading.Thread):
       if self.client.connected:
         data = self.conn.recv(1024)
         if data:
-          print(data.decode())
+          self.client.reciever(data.decode())
       else:
         break
   
