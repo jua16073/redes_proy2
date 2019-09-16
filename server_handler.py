@@ -1,6 +1,10 @@
 import json
 from Salas import Salas
 
+
+
+
+
 cards = ["3", "4", "5", "6", "7", "J", "Q", "K", "A", "2"]
 
 users = []
@@ -28,7 +32,11 @@ def handler(jmsg):
       'type': "room",
       'body': "Created"
     }
-    
+  
+  elif msg['type']=='startGame':
+    response = {
+      'type': 'empezara el juego'
+    }
   
   elif msg['type']=="getrooms":
     print(salas.all_salas())

@@ -1,3 +1,10 @@
+import President
+import View
+import controller
+import player
+import Deck
+
+
 class Salas:
 
     def __init__(self, capacidad):
@@ -12,9 +19,7 @@ class Salas:
     def unir_sala(self, jugador, nombre):
         for i in range(0, len(self.salas)):
             if self.salas[i].name() == nombre:
-                print("si esta")
                 if self.salas[i].how_many()<4:
-                    print("si hay espacio")
                     self.salas[i].jugadores.append(jugador)
                     print(self.salas[i].jugadores_nombres())
                     return self.salas[i].jugadores_nombres()
@@ -24,6 +29,11 @@ class Salas:
         for i in range(0,len(self.salas)):
             y.append(self.salas[i].name())
         return y
+
+    def start_game(self, name):
+        for i in range(0, len(self.salas)):
+            if name in self.salas[i].jugadores_nombres():
+                self.salas[i].juego()
 
 class Sala: 
 
@@ -45,3 +55,24 @@ class Sala:
     def jugadores_nombres(self):
         return self.jugadores
         
+    def juego(self):
+        game = President.President()
+        controllers = controller.Controller(game)
+        view = View.View(game)
+        controllers.registration(self.jugadores)
+        view.update()
+        controllers.deal_cards()
+        view.update()
+        view.show()
+
+        while not view.game_over:
+            view.show()
+            move = controllers.move()
+            if move == "pass":
+                print ("here")
+                controllers.player_pass()
+            elif move == "":
+                controllers.make_play()
+
+            view.update()
+        view.show_winners()

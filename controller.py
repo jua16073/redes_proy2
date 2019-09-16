@@ -13,12 +13,12 @@ class Controller(object):
     def __init__(self, president):
         self.president = president
 
-    def registration(self):
-        name = input('Add new player username: ')
-        if name.isalnum():
-            p = player.Player(name)
+    def registration(self, players):
+
+        for i in range(0, len(players)):
+            p = player.Player(players[i])
             self.president.add_player(p)
-        return not name.isalnum()
+
 
     # Players: list of players that is in the president
     def deal_cards(self):
