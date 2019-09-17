@@ -88,7 +88,7 @@ class Client:
           for card in self.cards:
             print(" ", card[0])
             names.append(card[0])
-          card = input("Ingrese el nombre de las cartas o carta (separadas por coma)")
+          card = input("Ingrese el nombre de las cartas o carta (separadas por coma): \n")
           if card in names:
             for c in self.cards:
               if card == c[0]:
@@ -190,6 +190,9 @@ class Client:
       self.current_card = msg['current_card']
       self.current_turn = msg['turn']
       print("El turno es de: ", msg['turn'])
+
+    elif msg['type'] == "finished":
+      print("Termino, ahora a esperar al resto")
 
     elif msg['type'] == 'move':
       self.current_card = msg['current_card']

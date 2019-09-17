@@ -143,7 +143,10 @@ def handler(jmsg, c):
 
   # FINISHED
   elif msg['type'] == "finished":
-    print(msg['body'])
+    print(msg['from']," termino")
+    #for s in rooms:
+     # if s['name'] == msg['room']:
+    
     response = {
       'type': "finished",
       'body': "Termino"
