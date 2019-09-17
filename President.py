@@ -1,5 +1,12 @@
 import Deck
 
+def deal_cards(deck, players):
+    while deck.size():
+        for player in players:
+            if deck.size() > 0:
+                player.add_cards(deck.pop())
+    self.current_turn = players[0]
+    self.current_players = players[:]
 
 class President(object):
     def __init__(self):

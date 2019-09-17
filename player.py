@@ -6,7 +6,7 @@
 # Player.py: describes the movements that the player can do         #    
 
 
-class Player(object):
+class Player():
 
 	def __init__(self, name):
 		self.name = name

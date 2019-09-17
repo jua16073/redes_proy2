@@ -11,24 +11,49 @@ cards = ["3", "4", "5", "6", "7", "J", "Q", "K", "A", "2"]
 def threaded(c):
   c.send(b"Welcome to President")
   while True:
-    try:
-      data = c.recv(1024)
-      response = h.handler(data.decode(), c)
-      if not response:
-        break
-      else:
-        if response['type'] == 'chat':
-          for t in response['to']:
-            response.pop('to', None)
-            t[0].send(json.dumps(response).encode())
-        else:  
-          c.send(json.dumps(response).encode())
-    except:
-      msg = json.dumps({
-        'type': "logout"
-      })
-      h.handler(msg, c)
+    data = c.recv(1024)
+    print(data)
+    response = h.handler(data.decode(), c)
+    if not response:
       break
+    else:
+      if response['type'] == 'chat':
+        for t in response['to']:
+          response.pop('to', None)
+          t[0].send(json.dumps(response).encode())
+      elif response['type'] == 'cards':
+        temp = response.copy()
+        for t in response['to']:
+          temp.pop('to', None)
+          temp['cards'] = response['cards'][response['to'].index(t)]
+          t[0].send(json.dumps(temp).encode())
+      elif response['type'] == 'move':
+        temp = response.copy()
+        for t in response['to']:
+          temp.pop('to', None)
+          t[0].send(json.dumps(temp).encode())
+      else:  
+        c.send(json.dumps(response).encode())
+    # try:
+    #   data = c.recv(1024)
+    #   print(data)
+    #   response = h.handler(data.decode(), c)
+    #   if not response:
+    #     break
+    #   else:
+    #     if response['type'] == 'chat':
+    #       for t in response['to']:
+    #         response.pop('to', None)
+    #         t[0].send(json.dumps(response).encode())
+    #     else:  
+    #       c.send(json.dumps(response).encode())
+    # except:
+    #   print("clavo")
+    #   msg = json.dumps({
+    #     'type': "logout"
+    #   })
+    #   h.handler(msg, c)
+    #   break
   c.close()
 
 def main():
