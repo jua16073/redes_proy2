@@ -70,14 +70,18 @@ class Client:
       self.s.send(msg.encode())
 
     elif body == "chat":
-      body = input("Mensaje a mandar: ")
-      jmsg = {
-        'type': 'chat',
-        'from': self.name,
-        'body': body,
-      }
-      msg = json.dumps(jmsg)
-      self.s.send(msg.encode()) 
+      if self.room != None:
+        body = input("Mensaje a mandar: ")
+        jmsg = {
+          'type': 'chat',
+          'from': self.name,
+          'room': self.room,
+          'body': body,
+        }
+        msg = json.dumps(jmsg)
+        self.s.send(msg.encode()) 
+      else:
+        print("No estas en una sala todavia")
 
     elif body == "jugada":
       names = []

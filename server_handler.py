@@ -10,10 +10,13 @@ import pickle
 # controllers = controller.Controller(game)
 # view = View.View(game)
 # sala = {
-#       'nombre': msg['room'],
+#       'name': msg['room'],
 #       'users': temp_users,
+#       'active_players': temp_users.copy(),
+#       'round_players': temp_users.copy(),
 #       'turn': 0,
-#       'current_card': 0
+#       'card_value': 0,
+#       'card_quantity': 1
 #     }
 
 complete = []
@@ -99,9 +102,13 @@ def handler(jmsg, c):
 
   # generic chat 
   elif msg['type'] == 'chat':
+    print("entro a chat")
     tos = []
-    for x in complete:
-      tos.append(x)
+    for s in rooms:
+      if s['name'] == msg['room']:
+        for x in s['users']:
+          tos.append(x[0])
+        print(tos)
     response = {
       'type': 'chat',
       'to': tos,
@@ -144,12 +151,15 @@ def handler(jmsg, c):
   # FINISHED
   elif msg['type'] == "finished":
     print(msg['from']," termino")
-    #for s in rooms:
-     # if s['name'] == msg['room']:
-    
+    for s in rooms:
+      print("rooms?")
+      if s['name'] == msg['room']:
+        for user in s['active_users']:
+          if user[0] == c:
+            s['active_users'].remove(user)
     response = {
       'type': "finished",
-      'body': "Termino"
+      'body': "Termino",
     }
 
   # NORMAL
