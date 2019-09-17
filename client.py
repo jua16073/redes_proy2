@@ -48,34 +48,43 @@ class Client:
     body = input("Mensaje: ")
     if body == "exit":
       self.logout()
+
     elif body == "start":
       body = input("Ingrese el nombre del cuarto: ")
       self.create_room(body)
+
     elif body == "search":
       self.get_room()
+
     elif body == "join":
       body = input("Ingrese el nombre del cuarto al que desea ingresar: ")
       self.join_room(body, self.name)
+
     elif body == "empezar":
       jmsg = {
         'type': "startGame",
-        'room': self.room
+        'from': self.name,
+        'room': self.room,
       }
       msg = json.dumps(jmsg)
       self.s.send(msg.encode())
+
     elif body == "chat":
       body = input("Mensaje a mandar: ")
       jmsg = {
         'type': 'chat',
+        'from': self.name,
         'body': body,
       }
       msg = json.dumps(jmsg)
       self.s.send(msg.encode()) 
+
     elif body == "jugada":
       names = []
       selected = []
       if self.current_turn == self.name:
-        while True:
+        cycle = True
+        while cycle:
           for card in self.cards:
             print(" ", card[0])
             names.append(card[0])
@@ -83,18 +92,37 @@ class Client:
           if card in names:
             for c in self.cards:
               if card == c[0]:
-                if int(c[1]) >= int(self.current_card[1]):
+                if int(c[1]) >= int(self.current_card):
                   self.cards.remove(c)
                   jmsg = {
                     'type': 'move',
+                    'from': self.name,
                     'room': self.room,
                     'selected': c,
                   }
                   msg = json.dumps(jmsg)
                   self.s.send(msg.encode())
-                  break
+                  if len(self.cards) == 0:
+                    jmsg = {
+                      'type': 'finished',
+                      'from': self.name,
+                      'room': self.room,
+                    }
+                    msg = json.dumps(jmsg)
+                    self.s.send(msg.encode())
+                  cycle = False
                 else:
                   print("Carta no valida, carta en juego es mayor")
+          elif card == "pass":
+            jmsg = {
+              'type': 'move',
+              'from': self.name,
+              'room': self.room,
+              'selected': 'pass',
+            }
+            msg = json.dumps(jmsg)
+            self.s.send(msg.encode())
+            cycle = False
           else:
             print("Carta no esta en tu mano")
       else:
@@ -103,6 +131,7 @@ class Client:
     else:
       jmsg = {
         'type': 'normal',
+        'from': self.name,
         'body': body,
       }
       msg = json.dumps(jmsg)
@@ -112,6 +141,7 @@ class Client:
   def create_room(self, room):
     jmsg = {
       'type': 'start',
+      'from': self.name,
       'body': room
     }
     msg = json.dumps(jmsg)
@@ -120,6 +150,7 @@ class Client:
   # Get all available rooms
   def get_room(self):
     jmsg = {
+      'from': self.name,
       'type': 'getrooms',
     }
     msg = json.dumps(jmsg)
@@ -129,6 +160,7 @@ class Client:
   def join_room(self, room, name):
     jmsg = {
       'type': 'join',
+      'from': self.name,
       'body': room,
       'name': name,
     }
@@ -170,6 +202,7 @@ class Client:
   # Logout from server
   def logout(self):
     jmsg = {
+      'from': self.name,
       'type': 'logout',
     }
     msg = json.dumps(jmsg)

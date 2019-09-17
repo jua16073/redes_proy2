@@ -7,7 +7,6 @@ import player
 import Deck
 import pickle
 
-games = []
 # controllers = controller.Controller(game)
 # view = View.View(game)
 # sala = {
@@ -16,8 +15,6 @@ games = []
 #       'turn': 0,
 #       'current_card': 0
 #     }
-
-cards = ["3", "4", "5", "6", "7", "J", "Q", "K", "A", "2"]
 
 complete = []
 users = []
@@ -58,8 +55,11 @@ def handler(jmsg, c):
     sala = {
       'name': msg['room'],
       'users': temp_users,
+      'active_players': temp_users.copy(),
+      'round_players': temp_users.copy(),
       'turn': 0,
-      'current_card': [0,0,0]
+      'card_value': 0,
+      'card_quantity': 1
     }
     rooms.append(sala)
     while len(cards):
@@ -73,7 +73,8 @@ def handler(jmsg, c):
       'body': "nani",
       'cards': user_cards,
       'turn': temp_users[sala['turn']][1],
-      'current_card': sala['current_card']
+      'current_card': sala['card_value'],
+      'card_quantity': sala['card_quantity']
     }
 
   # Send existing rooms
@@ -110,16 +111,43 @@ def handler(jmsg, c):
   elif msg['type'] == "move":
     for s in rooms:
       if s['name'] == msg['room']:
-        print("Si son iguales")
-        s['turn'] = (s['turn'] + 1) % len(s['users'])
-        s['current_card'] = msg['selected']
-        response = {
-          'to': s['users'],
-          'type': "move",
-          'current_card': s['current_card'],
-          'turn': s['users'][s['turn']][1]
-        }
-    print(rooms)
+        if msg['selected'] == 'pass':
+          for user in s['round_players']:
+            if user[1] == msg['from']:
+              s['round_players'].remove(user)
+              s['turn'] = s['turn'] % len(s['round_players'])
+              if len(s['round_players']) <= 1 :
+                actual = s['round_players'][0]
+                s['round_players'] = s['active_players'].copy()
+                s['card_value'] = 0
+                s['card_quantity'] = 0
+                s['turn'] = s['active_players'].index(actual)
+          response = {
+            'to': s['users'],
+            'type': "move",
+            'current_card': s['card_value'],
+            'card_quantity': s['card_quantity'],
+            'turn': s['round_players'][s['turn']][1],
+          }
+        else:
+          print("Movimiento")
+          s['turn'] = (s['turn'] + 1) % len(s['round_players'])
+          s['card_value'] = msg['selected'][1]
+          response = {
+            'to': s['users'],
+            'type': "move",
+            'current_card': s['card_value'],
+            'card_quantity': s['card_quantity'],
+            'turn': s['round_players'][s['turn']][1]
+          }
+
+  # FINISHED
+  elif msg['type'] == "finished":
+    print(msg['body'])
+    response = {
+      'type': "finished",
+      'body': "Termino"
+    }
 
   # NORMAL
   elif msg['type'] == "normal":
@@ -136,6 +164,7 @@ def handler(jmsg, c):
         complete.remove(u)
     print("Bye")
     return False
+
   # Default
   else:
     response = {
