@@ -112,6 +112,7 @@ def handler(jmsg, c):
         print(tos)
     response = {
       'type': 'chat',
+      'from': msg['from'],
       'to': tos,
       'body': msg['body']
     }

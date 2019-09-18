@@ -162,8 +162,17 @@ class Client:
                     }
                   msg = json.dumps(jmsg)
                   self.s.send(msg.encode())
+                  if len(self.cards) == 0:
+                      jmsg = {
+                        'type': 'finished',
+                        'from': self.name,
+                        'room': self.room,
+                      }
+                      msg = json.dumps(jmsg)
+                      self.s.send(msg.encode())
+                  cycle = False
                 else:
-                  print("La(s) carta(s) en juego es mayor")
+                  print("El valor de La(s) carta(s) en juego es mayor")
             else:
               print("Tines que jugar un numero mayor o igual a las cartas en juego")
       else:
@@ -243,6 +252,10 @@ class Client:
       print("El turno ahora es de: ", self.current_turn)
       print("Carta en la mesa es: ", self.current_card)
       print("Cantidad de la carta en mesa: ", self.current_quantity)
+
+    elif msg['type'] == 'chat':
+      print(msg['from'],": ", msg["body"])
+
     else:
       print(msg)
 
