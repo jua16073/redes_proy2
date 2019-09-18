@@ -197,6 +197,7 @@ class Client:
 
     elif msg['type'] == "finished":
       print("Termino, ahora a esperar al resto")
+      print("Puesto: ", msg['puesto'])
 
     elif msg['type'] == 'move':
       self.current_card = msg['current_card']

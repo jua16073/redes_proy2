@@ -90,7 +90,7 @@ def handler(jmsg, c):
 
   # Make user join room
   elif msg['type']=="join":
-    salas.unir_sala(msg['name'], msg['body'])
+    salas.unir_sala([msg['name'], c], msg['body'])
     for user in users:
       if user[0] == c:
         user[2] = msg['body']
@@ -107,7 +107,8 @@ def handler(jmsg, c):
     for s in rooms:
       if s['name'] == msg['room']:
         for x in s['users']:
-          tos.append(x[0])
+          print(x)
+          tos.append(x)
         print(tos)
     response = {
       'type': 'chat',
@@ -152,14 +153,16 @@ def handler(jmsg, c):
   elif msg['type'] == "finished":
     print(msg['from']," termino")
     for s in rooms:
-      print("rooms?")
       if s['name'] == msg['room']:
         for user in s['active_users']:
           if user[0] == c:
             s['active_users'].remove(user)
+            s['round_players'].remove(user)
+            s['winners'].append(user)
     response = {
       'type': "finished",
       'body': "Termino",
+      'puesto': len(s['winners']),
     }
 
   # NORMAL
