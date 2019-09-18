@@ -3,6 +3,8 @@ import json
 import threading
 from threading import Lock, Event, Barrier
 from _thread import *
+from colorama import init
+from colorama import Fore, Back, Style
 
 # username = ''
 # id = -1
@@ -245,11 +247,12 @@ class Client:
       #print(self.cards)
       self.current_card = msg['current_card']
       self.current_turn = msg['turn']
-      print("El turno es de: ", msg['turn'])
+      print(Back.BLUE+ Fore.WHITE+"El turno es de: ", msg['turn'])
 
     elif msg['type'] == "finished":
-      print("Termino, ahora a esperar al resto")
+      print(Fore.BLUE + Back.YELLOW +"Termino, ahora a esperar al resto")
       print("Puesto: ", msg['puesto'])
+      print(Style.RESET_ALL)
 
     elif msg['type'] == 'move':
       self.current_card = msg['current_card']
@@ -296,6 +299,7 @@ class listener(threading.Thread):
 
 
 if __name__ == "__main__":
+  init()
   user = input("Ingrese su nombre de Usuario ")
   client = Client(user)
   while True:
