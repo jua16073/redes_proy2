@@ -5,6 +5,7 @@ import json
 import server_handler as h
 
 HOST = '127.0.0.1'
+#HOST = '192.168.43.182'
 PORT = 65432
 
 cards = ["3", "4", "5", "6", "7", "J", "Q", "K", "A", "2"]

@@ -18,9 +18,9 @@ class Client:
     self.connected = True
     self.register()
     self.cards = None
-    self.card_names = None
     self.current_turn = None
     self.current_card = None
+    self.current_quantity = 0
 
   # Registrar en Server
   def register(self):
@@ -93,42 +93,79 @@ class Client:
             print(" ", card[0])
             names.append(card[0])
           card = input("Ingrese el nombre de las cartas o carta (separadas por coma): \n")
-          if card in names:
-            for c in self.cards:
-              if card == c[0]:
-                if int(c[1]) >= int(self.current_card):
-                  self.cards.remove(c)
-                  jmsg = {
-                    'type': 'move',
-                    'from': self.name,
-                    'room': self.room,
-                    'selected': c,
-                  }
-                  msg = json.dumps(jmsg)
-                  self.s.send(msg.encode())
-                  if len(self.cards) == 0:
+          multiple = card.split(",")
+          if len(multiple) == 1:
+            if card in names:
+              for c in self.cards:
+                if card == c[0]:
+                  if int(c[1]) >= int(self.current_card) and 1 >= self.current_quantity:
+                    self.cards.remove(c)
                     jmsg = {
-                      'type': 'finished',
+                      'type': 'move',
                       'from': self.name,
                       'room': self.room,
+                      'selected': c,
+                      'card_quantity': 1
                     }
                     msg = json.dumps(jmsg)
                     self.s.send(msg.encode())
-                  cycle = False
-                else:
-                  print("Carta no valida, carta en juego es mayor")
-          elif card == "pass":
-            jmsg = {
-              'type': 'move',
-              'from': self.name,
-              'room': self.room,
-              'selected': 'pass',
-            }
-            msg = json.dumps(jmsg)
-            self.s.send(msg.encode())
-            cycle = False
+                    if len(self.cards) == 0:
+                      jmsg = {
+                        'type': 'finished',
+                        'from': self.name,
+                        'room': self.room,
+                      }
+                      msg = json.dumps(jmsg)
+                      self.s.send(msg.encode())
+                    cycle = False
+                  else:
+                    print("Carta no valida, carta en juego es mayor")
+            elif card == "pass":
+              jmsg = {
+                'type': 'move',
+                'from': self.name,
+                'room': self.room,
+                'selected': 'pass',
+              }
+              msg = json.dumps(jmsg)
+              self.s.send(msg.encode())
+              cycle = False
+            else:
+              print("Carta no esta en tu mano")
           else:
-            print("Carta no esta en tu mano")
+            check = True
+            for c_name in multiple:
+              if c_name in names:
+                pass
+              else:
+                check = False
+                print(c_name, " no esta en tu mano")
+            if len(multiple) >= self.current_quantity:
+              values = []
+              selected_cards = []
+              for c in self.cards:
+                for c_name in multiple:
+                  if c[0] == c_name:
+                    values.append(c[1])
+                    selected_cards.append(c)
+              if len(set(values)) == 1:
+                if int(values[0]) >= int(self.current_card):
+                  print("Valor: ", values[0])
+                  for sc in selected_cards:
+                    self.cards.remove(sc)
+                  jmsg = {
+                      'type': 'move',
+                      'from': self.name,
+                      'room': self.room,
+                      'selected': selected_cards[0],
+                      'card_quantity': len(multiple)
+                    }
+                  msg = json.dumps(jmsg)
+                  self.s.send(msg.encode())
+                else:
+                  print("La(s) carta(s) en juego es mayor")
+            else:
+              print("Tines que jugar un numero mayor o igual a las cartas en juego")
       else:
         print("No es tu turno")
 
@@ -190,7 +227,7 @@ class Client:
       for card in msg['cards']:
         cards.append(card.split("/"))
       self.cards = cards
-      print(self.cards)
+      #print(self.cards)
       self.current_card = msg['current_card']
       self.current_turn = msg['turn']
       print("El turno es de: ", msg['turn'])
@@ -202,8 +239,10 @@ class Client:
     elif msg['type'] == 'move':
       self.current_card = msg['current_card']
       self.current_turn = msg['turn']
+      self.current_quantity = msg['card_quantity']
       print("El turno ahora es de: ", self.current_turn)
       print("Carta en la mesa es: ", self.current_card)
+      print("Cantidad de la carta en mesa: ", self.current_quantity)
     else:
       print(msg)
 

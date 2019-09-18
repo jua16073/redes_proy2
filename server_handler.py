@@ -62,7 +62,7 @@ def handler(jmsg, c):
       'round_players': temp_users.copy(),
       'turn': 0,
       'card_value': 0,
-      'card_quantity': 1
+      'card_quantity': 0,
     }
     rooms.append(sala)
     while len(cards):
@@ -138,9 +138,9 @@ def handler(jmsg, c):
             'turn': s['round_players'][s['turn']][1],
           }
         else:
-          print("Movimiento")
           s['turn'] = (s['turn'] + 1) % len(s['round_players'])
           s['card_value'] = msg['selected'][1]
+          s['card_quantity'] = msg['card_quantity']
           response = {
             'to': s['users'],
             'type': "move",
