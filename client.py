@@ -31,11 +31,11 @@ class Client:
       'body': self.name,
     }
     msg = json.dumps(jmsg)
-    print(msg)
+    #print(Back.MAGENTA + Fore.CYAN + msg + Style.RESET_ALL)
     self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     self.s.connect(self.server)
     data = self.s.recv(1024)
-    print(data.decode())
+    print(Back.MAGENTA + Fore.CYAN + data.decode() + Style.RESET_ALL)
     self.s.send(msg.encode())
     data = self.s.recv(1024)
     msg = json.loads(data.decode())
@@ -98,7 +98,7 @@ class Client:
         cycle = True
         while cycle:
           for card in self.cards:
-            print(" ", card[0])
+            print(Back.RED+Fore.WHITE," ", card[0] , Style.RESET_ALL)
             names.append(card[0])
           card = input("Ingrese el nombre de las cartas o carta (separadas por coma): \n")
           multiple = card.split(", ")
@@ -139,7 +139,7 @@ class Client:
               self.s.send(msg.encode())
               cycle = False
             else:
-              print("Carta no esta en tu mano")
+              print(Back.RED + Fore.BLACK + "Carta no esta en tu mano"+ Style.RESET_ALL)
           else:
             check = True
             for c_name in multiple:
@@ -147,7 +147,7 @@ class Client:
                 pass
               else:
                 check = False
-                print(c_name, " no esta en tu mano")
+                print(Back.RED + Fore.BLACK + c_name, " no esta en tu mano" + Style.RESET_ALL)
             if len(multiple) >= self.current_quantity:
               values = []
               selected_cards = []
@@ -180,11 +180,11 @@ class Client:
                       self.s.send(msg.encode())
                   cycle = False
                 else:
-                  print("El valor de La(s) carta(s) en juego es mayor")
+                  print(Back.RED + Fore.BLACK + "El valor de La(s) carta(s) en juego es mayor"+ Style.RESET_ALL)
             else:
-              print("Tines que jugar un numero mayor o igual a las cartas en juego")
+              print(Back.RED + Fore.BLACK + "Tines que jugar un numero mayor o igual a las cartas en juego"+ Style.RESET_ALL)
       else:
-        print("No es tu turno")
+        print(Back.RED + Fore.BLACK + "No es tu turno" + Style.RESET_ALL)
 
     else:
       jmsg = {
@@ -248,6 +248,7 @@ class Client:
       self.current_card = msg['current_card']
       self.current_turn = msg['turn']
       print(Back.BLUE+ Fore.WHITE+"El turno es de: ", msg['turn'])
+      print(Style.RESET_ALL)
 
     elif msg['type'] == "finished":
       print(Fore.BLUE + Back.YELLOW +"Termino, ahora a esperar al resto")
@@ -258,12 +259,13 @@ class Client:
       self.current_card = msg['current_card']
       self.current_turn = msg['turn']
       self.current_quantity = msg['card_quantity']
-      print("El turno ahora es de: ", self.current_turn)
-      print("Carta en la mesa es: ", self.current_card)
-      print("Cantidad de la carta en mesa: ", self.current_quantity)
+      print(Back.BLUE+Fore.WHITE+"El turno ahora es de: ", self.current_turn , Style.RESET_ALL)
+      print(Back.BLUE + Fore.WHITE+"Carta en la mesa es: ", self.current_card , Style.RESET_ALL)
+      print(Back.BLUE + Fore.WHITE+"Cantidad de la carta en mesa: ", self.current_quantity , Style.RESET_ALL)
 
     elif msg['type'] == 'chat':
-      print(msg['from'],": ", msg["body"])
+      print(Back.CYAN+Fore.WHITE+msg['from'],": " + Back.LIGHTMAGENTA_EX + Fore.WHITE,msg["body"])
+      print(Style.RESET_ALL)
 
     else:
       print(msg)
@@ -300,7 +302,7 @@ class listener(threading.Thread):
 
 if __name__ == "__main__":
   init()
-  user = input("Ingrese su nombre de Usuario ")
+  user = input(Back.GREEN + Fore.BLACK+"Ingrese su nombre de Usuario" + Style.RESET_ALL + " ")
   client = Client(user)
   while True:
     if client.connected:
