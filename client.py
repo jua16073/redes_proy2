@@ -93,7 +93,7 @@ class Client:
             print(" ", card[0])
             names.append(card[0])
           card = input("Ingrese el nombre de las cartas o carta (separadas por coma): \n")
-          multiple = card.split(",")
+          multiple = card.split(", ")
           if len(multiple) == 1:
             if card in names:
               for c in self.cards:
