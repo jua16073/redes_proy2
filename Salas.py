@@ -1,6 +1,3 @@
-import President
-import View
-import controller
 import player
 import Deck
 
@@ -56,28 +53,6 @@ class Sala:
 
     def jugadores_nombres(self):
         return self.jugadores
-        
-    def juego(self):
-        game = President.President()
-        controllers = controller.Controller(game)
-        view = View.View(game)
-        controllers.registration(self.jugadores)
-        view.update()
-        controllers.deal_cards()
-        view.update()
-        view.show()
-
-        while not view.game_over:
-            view.show()
-            move = controllers.move()
-            if move == "pass":
-                print ("here")
-                controllers.player_pass()
-            elif move == "":
-                controllers.make_play()
-            view.update()
-        view.show_winners()
-
     
     def actuan_turn(self):
         return self.turn

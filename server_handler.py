@@ -1,23 +1,6 @@
 import json
 from Salas import Salas
-import President
-import View
-import controller
-import player
 import Deck
-import pickle
-
-# controllers = controller.Controller(game)
-# view = View.View(game)
-# sala = {
-#       'name': msg['room'],
-#       'users': temp_users,
-#       'active_players': temp_users.copy(),
-#       'round_players': temp_users.copy(),
-#       'turn': 0,
-#       'card_value': 0,
-#       'card_quantity': 1
-#     }
 
 complete = []
 users = []

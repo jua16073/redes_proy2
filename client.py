@@ -37,15 +37,21 @@ class Client:
     self.s.send(msg.encode())
     data = self.s.recv(1024)
     msg = json.loads(data.decode())
-    #self.id = msg['id']
-    print("Listo " + self.name)
-    #" id: " + str(self.id)
     self.server_listener = listener(self.s, self)
     self.server_listener.start()
     self.send_msg()
   
+  def help():
+    print("Comandos")
+    print("start: Crear sala")
+    print("join: Unirse a sala")
+    print("search: Mostrar salas")
+    print("game: Empezar el juego")
+    print("move: Realizar jugada")
+    print("exit: Salir del juego")
+  
   def send_msg(self):
-    body = input("Mensaje: ")
+    body = input("Comando: ")
     if body == "exit":
       self.logout()
 
@@ -60,7 +66,7 @@ class Client:
       body = input("Ingrese el nombre del cuarto al que desea ingresar: ")
       self.join_room(body, self.name)
 
-    elif body == "empezar":
+    elif body == "game":
       jmsg = {
         'type': "startGame",
         'from': self.name,
@@ -83,7 +89,7 @@ class Client:
       else:
         print("No estas en una sala todavia")
 
-    elif body == "jugada":
+    elif body == "move":
       names = []
       selected = []
       if self.current_turn == self.name:
