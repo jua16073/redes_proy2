@@ -247,13 +247,11 @@ class Client:
       #print(self.cards)
       self.current_card = msg['current_card']
       self.current_turn = msg['turn']
-      print(Back.BLUE+ Fore.WHITE+"El turno es de: ", msg['turn'])
-      print(Style.RESET_ALL)
+      print(Back.BLUE+ Fore.WHITE+"El turno es de: ", msg['turn'], Style.RESET_ALL)
 
     elif msg['type'] == "finished":
       print(Fore.BLUE + Back.YELLOW +"Termino, ahora a esperar al resto")
-      print("Puesto: ", msg['puesto'])
-      print(Style.RESET_ALL)
+      print("Puesto: ", msg['puesto'], Style.RESET_ALL)
 
     elif msg['type'] == 'move':
       self.current_card = msg['current_card']
@@ -264,8 +262,7 @@ class Client:
       print(Back.BLUE + Fore.WHITE+"Cantidad de la carta en mesa: ", self.current_quantity , Style.RESET_ALL)
 
     elif msg['type'] == 'chat':
-      print(Back.CYAN+Fore.WHITE+msg['from'],": " + Back.LIGHTMAGENTA_EX + Fore.WHITE,msg["body"])
-      print(Style.RESET_ALL)
+      print(Back.CYAN+Fore.BLACK+msg['from'],":" + Back.LIGHTMAGENTA_EX + Fore.WHITE,msg["body"] + Style.RESET_ALL)
 
     else:
       print(msg)
